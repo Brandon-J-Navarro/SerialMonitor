@@ -1,0 +1,114 @@
+﻿<Window x:Class="SerialMonitor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SerialMonitor"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBox Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="3" x:Name="ConsoleWindow" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" Width="780" Height="306" TextChanged="ConsoleWindow_TextChanged" Background="Black" Foreground="White"/>
+        <Button Grid.ColumnSpan="2" Grid.Row="0" x:Name="StartMonitor" Content="Start Monitor" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="80" Click="StartMonitor_Click"/>
+        <Grid Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Comm. Port:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0" />
+            <TextBox Grid.Row="0" Grid.Column="1" x:Name="CommPort" Text="COM1" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0"  Width="120" TextChanged="CommPort_TextChanged"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" IsHitTestVisible="False" Text=" COM1, /dev/ttyUSB0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Width="120" Foreground="DarkGray">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=CommPort}" Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <Label Grid.Row="1" Grid.Column="0" Content="Baud Rate:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0"/>
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="BaudRate" Text="9600" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Width="120" TextChanged="BaudRate_TextChanged"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" IsHitTestVisible="False" Text=" 9600" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Width="120" Foreground="DarkGray">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=BaudRate}" Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Data Bits:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0"/>
+            <TextBox Grid.Row="0" Grid.Column="1" x:Name="DataBits" TextWrapping="Wrap" Text="8" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Width="120" TextChanged="DataBits_TextChanged"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" IsHitTestVisible="False" Text=" 8" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Width="120" Foreground="DarkGray">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=DataBits}" Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <Label Grid.Row="1" Grid.Column="0" Content="Stop Bits:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0"/>
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="StopBits" TextWrapping="Wrap" Text="One" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Width="120" TextChanged="StopBits_TextChanged"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" IsHitTestVisible="False" Text=" None,One,Two,OnePointFive" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Width="120" Foreground="DarkGray">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=StopBits}" Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <Label Grid.Row="2" Grid.Column="0" Content="Parity:" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0"/>
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="Parity" TextWrapping="Wrap" Text="None" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Width="120" TextChanged="Parity_TextChanged"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" IsHitTestVisible="False" Text=" None,Odd,Even,Mark,Space" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0" Width="120" Foreground="DarkGray">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=Parity}" Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
+    </Grid>
+</Window>
