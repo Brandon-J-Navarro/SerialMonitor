@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SerialMonitor.Model
 {
-    internal class SerialMonitorModel
+    public class SerialMonitorModel
     {
         public string _consoleWindow { get; set; }
         public string _commPort { get; set; }

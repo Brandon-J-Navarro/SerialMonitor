@@ -1,4 +1,5 @@
 ﻿using SerialMonitor.Model;
+using SerialMonitor.Repository;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,21 +11,26 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO.Ports;
+using System.Runtime.InteropServices;
 
 namespace SerialMonitor
 {
     public partial class MainWindow : Window
     {
-        private static SerialMonitorModel serialMonitorModel = new SerialMonitorModel();
+        public static SerialMonitorModel serialMonitorModel = new SerialMonitorModel();
+
+        CancellationTokenSource cancellationToken = new();
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void ConsoleWindow_TextChanged(object sender, TextChangedEventArgs e)
+        public void ConsoleWindow_TextChanged(object sender, TextChangedEventArgs e)
         {
-            serialMonitorModel._consoleWindow = ConsoleWindow.Text;
+            //serialMonitorModel._consoleWindow = ConsoleWindow.Text;
+            ConsoleWindow.CaretIndex = ConsoleWindow.Text.Length;
+            ConsoleWindow.ScrollToEnd();
         }
 
         private void CommPort_TextChanged(object sender, TextChangedEventArgs e)
@@ -52,56 +58,37 @@ namespace SerialMonitor
             serialMonitorModel._parity = Parity.Text;
         }
 
-        private void StartMonitor_Click(object sender, RoutedEventArgs e)
+        public void StartMonitor_Click(object sender, RoutedEventArgs e)
         {
-            StartSerialPort(_port);
+            Monitor();
         }
 
-            private static readonly string _commPort = serialMonitorModel._commPort;
-            private static readonly int _baudRate = Convert.ToInt32(serialMonitorModel._buadRate);
-            private static readonly string _parityValue = serialMonitorModel._parity;
-            private static readonly Parity _parity = (Parity)Enum.Parse(typeof(Parity), _parityValue);
-            private static readonly int _dataBits = Convert.ToInt32(serialMonitorModel._dataBits);
-            private static readonly string _stopBitsValue = serialMonitorModel._stopBits;
-            private static readonly StopBits _stopBits = (StopBits)Enum.Parse(typeof(StopBits), _stopBitsValue);
-
-            private static SerialPort _port = new SerialPort(portName: _commPort, baudRate: _baudRate, parity: _parity, dataBits: _dataBits, stopBits: _stopBits);
-
-        static void StartSerialPort(SerialPort _port)
+        private void StopMonitor_Click(object sender, RoutedEventArgs e)
         {
+            cancellationToken.Cancel();
+        }
 
-            bool _loop = false;
-            while (_loop == false)
+        public async Task Monitor()
+        {
+            await Task.Run(() =>
             {
-                try
+                bool isTrue = true;
+                while (isTrue)
                 {
-                    _loop = ReadSerialPort(_port);
-                    if (_loop)
+                    string _line = InitSerial.StartSerialPort();
+                    this.Dispatcher.Invoke(() =>
                     {
-                        StartSerialPort(_port);
+                        if (!(string.IsNullOrEmpty(_line)))
+                        {
+                            ConsoleWindow.Text += _line + "\n";
+                        }
+                    });
+                    if (cancellationToken.Token.IsCancellationRequested)
+                    {
+                        isTrue = false;
                     }
                 }
-                catch (Exception ex)
-                {
-                    serialMonitorModel._consoleWindow = ex.ToString() + "\n";
-                }
-            }
-        }
-        public static bool ReadSerialPort(SerialPort port)
-        {
-            bool _condition = false;
-            port.Open();
-            while (_condition == false)
-            {
-                string _line = port.ReadLine();
-                serialMonitorModel._consoleWindow = _line;
-                if (_line == "I'm down.\r")
-                {
-                    _condition = true;
-                }
-            }
-            port.Close();
-            return _condition;
+            }, cancellationToken.Token);
         }
     }
 }
